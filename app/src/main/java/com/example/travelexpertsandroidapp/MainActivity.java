@@ -76,7 +76,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Package pkg = (Package) lstPackages.getAdapter().getItem(i);
-                Log.d("Anna", pkg.getPackageID() + " " + pkg.getPkgDesc());
                 Intent intent = new Intent(getApplicationContext(), PackageViewActivity.class);
                 intent.putExtra("package", pkg.getPackageID());
                 intent.putExtra("mode", "edit");
@@ -102,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
             Executors.newSingleThreadExecutor().execute(new GetPackages());
         }
         catch(Exception e){
+            e.printStackTrace();
         }
     }
 

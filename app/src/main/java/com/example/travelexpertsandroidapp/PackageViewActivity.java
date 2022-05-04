@@ -163,7 +163,7 @@ public class PackageViewActivity extends AppCompatActivity {
         public void run() {
             String URL = "http://192.168.0.57:8081/Group1Term3RestM7-1.0-SNAPSHOT/api/putpackage";
             JSONObject obj = new JSONObject();
-            SimpleDateFormat df = new SimpleDateFormat("\"MMM dd, yyyy\"");
+            SimpleDateFormat df = new SimpleDateFormat("MMM dd, yyyy");
             String startDate = df.format(pkg.getPkgStartDate());
             String endDate = df.format(pkg.getPkgEndDate());
             try{
