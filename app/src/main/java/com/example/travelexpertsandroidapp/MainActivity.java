@@ -1,7 +1,30 @@
+/*
+Daniel Palmer
+PROJ-207-A
+Workshop 8 - Android App
+2022-05-03
+ */
+
 package com.example.travelexpertsandroidapp;
 
+/*
+    This is an android app prototype that is designed to allow the Agents of Travel Experts
+    The ability to modify their various forms of data from a mobile platform
+    This prototype demonstrate the maintenance of packages in the database
+    This application was created and completed by Daniel Palmer
+
+    Connects to the RESTful API created by Richard (Chef) Cook
+
+    The application has a hard coded url at the following places, where the IP address will need to
+    be changed
+    1. Line 111 of MainActivity.java (this page)
+    2. Line 164 of PackageViewActivity.java
+    3. Line 217 of PackageViewActivity.java
+    4. Line 285 of PackageViewActivity.java
+    5. Line 325 of PackageViewActivity.java
+*/
+
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -24,10 +47,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Array;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.concurrent.Executors;
 

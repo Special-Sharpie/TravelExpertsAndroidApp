@@ -1,12 +1,17 @@
+/*
+Daniel Palmer
+PROJ-207-A
+Workshop 8 - Android App
+2022-05-03
+ */
+
 package com.example.travelexpertsandroidapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -20,7 +25,6 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -30,7 +34,8 @@ import java.util.Date;
 import java.util.concurrent.Executors;
 
 import Model.Package;
-
+// Android activity that provides the user with a form to Add, Edit or Delete packages from the
+// Travel Experts database
 public class PackageViewActivity extends AppCompatActivity {
 
     private EditText tbPkgId;
@@ -48,12 +53,14 @@ public class PackageViewActivity extends AppCompatActivity {
     private RequestQueue requestQueue;
 
     @Override
+    // On Create method that runs when the activity is created
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_package_view);
 
         requestQueue = Volley.newRequestQueue(this);
 
+        //Selects the page controls
         tbPkgId = findViewById(R.id.tbPkgID);
         tbPkgName = findViewById(R.id.tbPkgName);
         tbPkgStartDate = findViewById(R.id.tbPkgStartDate);
@@ -66,12 +73,19 @@ public class PackageViewActivity extends AppCompatActivity {
         btnConfirmAdd = findViewById(R.id.btnConfirmAdd);
 
         Intent intent = getIntent();
+        // Checks to see which mode has been selected, either add, or edit
         if (intent.getStringExtra("mode").equals("edit")){
+            // This page mode provides the user with the ability to edit the values of the currently
+            // selected package, or delete it(does not work on existing package, i did not have time to sort the foreign key constraints)
             btnUpdate.setEnabled(true);
             btnDelete.setEnabled(true);
+            // Pulls the package id from the intent, and pulls the package data associated with from the
+            // RESTful API service
             int pkg = (int) intent.getSerializableExtra("package");
             Executors.newSingleThreadExecutor().execute(new GetPackage(pkg));
 
+            // Handles the Onclick event of the Update button, creating an instance of the package class
+            // and posts those changes to the API service, finally redirecting the user back to the main page
             btnUpdate.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -95,7 +109,8 @@ public class PackageViewActivity extends AppCompatActivity {
                     finish();
                 }
             });
-
+            // Handle the OnClick event for the Delete button, sending a delete request to the API
+            // service to the delete the package of the ID passed in the intent
             btnDelete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -106,7 +121,10 @@ public class PackageViewActivity extends AppCompatActivity {
 
         }
         else if(intent.getStringExtra("mode").equals("add")){
+            // This page mode provides the user the ability to create new packages in the database
             btnConfirmAdd.setEnabled(true);
+            // Handles the OnClick event of the Add Package button, creates an instance of the Package
+            // class and sends a put request to the API service to add the Package to the database
             btnConfirmAdd.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -131,6 +149,8 @@ public class PackageViewActivity extends AppCompatActivity {
             });
         }
     }
+    // Runnable class that handles creating and submitting PUT requests to the API service
+    // Creates a JSON object out of the Package object passed in the constructor
     class PutPackage implements Runnable{
 
         private Package pkg;
@@ -143,7 +163,7 @@ public class PackageViewActivity extends AppCompatActivity {
         public void run() {
             String URL = "http://192.168.0.57:8081/Group1Term3RestM7-1.0-SNAPSHOT/api/putpackage";
             JSONObject obj = new JSONObject();
-            SimpleDateFormat df = new SimpleDateFormat("MMM dd, yyyy");
+            SimpleDateFormat df = new SimpleDateFormat("\"MMM dd, yyyy\"");
             String startDate = df.format(pkg.getPkgStartDate());
             String endDate = df.format(pkg.getPkgEndDate());
             try{
@@ -182,7 +202,9 @@ public class PackageViewActivity extends AppCompatActivity {
             requestQueue.add(jsonObjectRequest);
         }
     }
-
+    // Runnable class that handles creating and submitting GET requests to the API service
+    // Uses the JSON response object to load the page fields with the data associated with the passed
+    // ID in the database
     class GetPackage implements Runnable{
         private int pkgId;
 
@@ -248,7 +270,8 @@ public class PackageViewActivity extends AppCompatActivity {
             requestQueue.add(stringRequest);
         }
     }
-
+    // Runnable class that handles creating and submitting DELETE requests to the API service
+    // Sends a request that the passed ID be deleted
     class DeletePackage implements Runnable{
 
         private int pkgid;
@@ -286,7 +309,9 @@ public class PackageViewActivity extends AppCompatActivity {
             requestQueue.add(stringRequest);
         }
     }
-
+    // Runnable class that handles creating and submitting POST requests to the API service
+    // Creates a JSON object out of the Package object passed in the constructor and sends
+    // the request to the API service to update the package in the database
     class PostPackage implements Runnable{
 
         private Package pkg;

@@ -1,6 +1,11 @@
-package Model;
+/*
+Daniel Palmer
+PROJ-207-A
+Workshop 8 - Android App
+2022-05-03
+ */
 
-import androidx.annotation.NonNull;
+package Model;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -26,7 +31,7 @@ public class Package implements Serializable {
         PkgBasePrice = pkgBasePrice;
         PkgAgencyCommission = pkgAgencyCommission;
     }
-
+    // Getters and Setters
     public int getPackageID() {
         return PackageID;
     }
