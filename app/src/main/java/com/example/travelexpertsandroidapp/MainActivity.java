@@ -3,9 +3,13 @@ package com.example.travelexpertsandroidapp;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 
 import com.android.volley.Request;
@@ -31,9 +35,10 @@ import Model.Package;
 
 public class MainActivity extends AppCompatActivity {
 
-    ListView lstPackages;
-    ArrayList<Package> packages = new ArrayList<Package>();
-    RequestQueue requestQueue;
+    private ListView lstPackages;
+    private Button btnAdd;
+    private RequestQueue requestQueue;
+    private ArrayAdapter<Package> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,46 +47,84 @@ public class MainActivity extends AppCompatActivity {
         requestQueue = Volley.newRequestQueue(this);
 
         lstPackages = findViewById(R.id.lstPackages);
+        btnAdd = findViewById(R.id.btnAdd);
 
-        String URL = "http://192.168.0.57:8081/Group1Term3RestM7-1.0-SNAPSHOT/api/getpackages";
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, URL,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        VolleyLog.wtf(response, "utf-8");
-                        ArrayAdapter<Package> adapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1);
-                        try{
-                            JSONArray jsonArray = new JSONArray(response);
-                            for (int i = 0; i < jsonArray.length(); i++){
-                                JSONObject obj = jsonArray.getJSONObject(i);
-                                SimpleDateFormat df = new SimpleDateFormat("MMM dd, yyyy");
-                                Date startDate = (Date) df.parse(obj.getString("pkgStartDate"));
-                                Date endDate = (Date) df.parse(obj.getString("pkgEndDate"));
-                                Package pkg = new Package(obj.getInt("packageId"),
-                                        obj.getString("pkgName"),
-                                        startDate,
-                                        endDate,
-                                        obj.getString("pkgDesc"),
-                                        obj.getDouble("pkgBasePrice"),
-                                        obj.getDouble("pkgAgencyCommission"));
-                                adapter.add(pkg);
-                            }
-                        } catch (JSONException | ParseException e) {
-                            e.printStackTrace();
-                        }
-                        final ArrayAdapter<Package> finalAdapter = adapter;
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                lstPackages.setAdapter(finalAdapter);
-                            }
-                        });
-                    }
-                }, new Response.ErrorListener() {
+        Executors.newSingleThreadExecutor().execute(new GetPackages());
+
+        lstPackages.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onErrorResponse(VolleyError error) {
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Intent intent = new Intent(getApplicationContext(), PackageViewActivity.class);
+                intent.putExtra("package", (Package) lstPackages.getAdapter().getItem(i));
+                startActivity(intent);
             }
         });
-        requestQueue.add(stringRequest);
+
+        btnAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), PackageViewActivity.class);
+                intent.putExtra("mode", "add");
+                startActivity(intent);
+            }
+        });
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        try{
+            adapter.clear();
+            Executors.newSingleThreadExecutor().execute(new GetPackages());
+        }
+        catch(Exception e){
+        }
+    }
+
+    class GetPackages implements Runnable{
+        @Override
+        public void run() {
+            String URL = "http://192.168.0.57:8081/Group1Term3RestM7-1.0-SNAPSHOT/api/getpackages";
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, URL,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            VolleyLog.wtf(response, "utf-8");
+                            adapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1);
+                            try{
+                                JSONArray jsonArray = new JSONArray(response);
+                                for (int i = 0; i < jsonArray.length(); i++){
+                                    JSONObject obj = jsonArray.getJSONObject(i);
+                                    SimpleDateFormat df = new SimpleDateFormat("MMM dd, yyyy");
+                                    Date startDate = (Date) df.parse(obj.getString("pkgStartDate"));
+                                    Date endDate = (Date) df.parse(obj.getString("pkgEndDate"));
+                                    Package pkg = new Package(obj.getInt("packageId"),
+                                            obj.getString("pkgName"),
+                                            startDate,
+                                            endDate,
+                                            obj.getString("pkgDesc"),
+                                            obj.getDouble("pkgBasePrice"),
+                                            obj.getDouble("pkgAgencyCommission"));
+                                    adapter.add(pkg);
+                                }
+                            } catch (JSONException | ParseException e) {
+                                e.printStackTrace();
+                            }
+                            final ArrayAdapter<Package> finalAdapter = adapter;
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    lstPackages.setAdapter(finalAdapter);
+                                }
+                            });
+                        }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                }
+            });
+            requestQueue.add(stringRequest);
+        }
+    }
+
 }

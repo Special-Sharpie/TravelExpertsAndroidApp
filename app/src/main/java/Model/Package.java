@@ -1,10 +1,14 @@
 package Model;
 
+import androidx.annotation.NonNull;
+
+import java.io.Serializable;
 import java.util.Date;
 
 // Class that mirrors the packages table of the TravelExperts database
 
-public class Package {
+public class Package implements Serializable {
+    private static final long serialVersionUID = 1L;
     private int PackageID;
     private String PkgName;
     private Date PkgStartDate;
@@ -81,6 +85,6 @@ public class Package {
 
     @Override
     public String toString() {
-        return getPkgName();
+        return PkgName;
     }
 }
