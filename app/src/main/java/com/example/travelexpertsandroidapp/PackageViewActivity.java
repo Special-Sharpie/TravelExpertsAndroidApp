@@ -32,6 +32,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import Model.Package;
 // Android activity that provides the user with a form to Add, Edit or Delete packages from the
@@ -163,7 +164,7 @@ public class PackageViewActivity extends AppCompatActivity {
         public void run() {
             String URL = "http://192.168.0.57:8081/Group1Term3RestM7-1.0-SNAPSHOT/api/putpackage";
             JSONObject obj = new JSONObject();
-            SimpleDateFormat df = new SimpleDateFormat("MMM dd, yyyy");
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String startDate = df.format(pkg.getPkgStartDate());
             String endDate = df.format(pkg.getPkgEndDate());
             try{
@@ -236,7 +237,7 @@ public class PackageViewActivity extends AppCompatActivity {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    SimpleDateFormat df = new SimpleDateFormat("MMM dd, yyyy");
+                                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                                     SimpleDateFormat targetDf = new SimpleDateFormat("yyyy-MM-dd");
                                     Date startDate = null, endDate = null;
                                     String formattedStartDate = null, formattedEndDate = null;
@@ -324,7 +325,7 @@ public class PackageViewActivity extends AppCompatActivity {
         public void run() {
             String URL = "http://192.168.0.57:8081/Group1Term3RestM7-1.0-SNAPSHOT/api/postpackage/";
             JSONObject obj = new JSONObject();
-            SimpleDateFormat df = new SimpleDateFormat("MMM dd, yyyy");
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String startDate = df.format(pkg.getPkgStartDate());
             String endDate = df.format(pkg.getPkgEndDate());
             try{

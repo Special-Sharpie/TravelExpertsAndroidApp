@@ -17,6 +17,8 @@ package com.example.travelexpertsandroidapp;
 
     The application has a hard coded url at the following places, where the IP address will need to
     be changed
+    THESE LINES ARE NOT ACCURATE ANYMORE, HOWEVER THE LINES ARE STILL RELATIVELY NEAR THE LISTED
+    I AM TOO LAZY TO GO AND DO THIS AGAIN, SORRY
     1. Line 111 of MainActivity.java (this page)
     2. Line 164 of PackageViewActivity.java
     3. Line 217 of PackageViewActivity.java
@@ -28,7 +30,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -51,9 +52,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import Model.Package;
-
+// MainActicity serves as the main page of application, allowing the user to view all packages,
+// select a package to modify, or create a new one
 public class MainActivity extends AppCompatActivity {
 
     private ListView lstPackages;
@@ -61,6 +64,8 @@ public class MainActivity extends AppCompatActivity {
     private RequestQueue requestQueue;
     private ArrayAdapter<Package> adapter;
 
+    // Handles loading all the packages in to the list view as well redirecting
+    // the user based on the input selected (list item or add button)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,6 +77,8 @@ public class MainActivity extends AppCompatActivity {
 
         Executors.newSingleThreadExecutor().execute(new GetPackages());
 
+        // Loads the PackageViewActivity in "edit" mode when a list item is selected
+        // Passes the package id of the selected item to the PackageViewActivity page
         lstPackages.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -82,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
+        // Loads the PackageViewActivity in "add" mode when the "Add Product" button is clicked
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -92,11 +99,20 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
+    // Method onResume is run when ever the user is redirected to the main page
+    // Clears the list view and reload the data to capture any changes made
     @Override
     protected void onResume() {
         super.onResume();
         try{
+            // Pauses the app for half of a second to allow the API changes to process
+            // Helps avoid loading values that have been deleted
+            // Or loading the page before the new values have registered in the API
+            try {
+                TimeUnit.MILLISECONDS.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             adapter.clear();
             Executors.newSingleThreadExecutor().execute(new GetPackages());
         }
@@ -104,7 +120,8 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
-
+    // Runnable class that handles creating and submitting GET requests to the API service
+    // Uses the JSON response object to load the list view with each package returned
     class GetPackages implements Runnable{
         @Override
         public void run() {
@@ -119,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
                                 JSONArray jsonArray = new JSONArray(response);
                                 for (int i = 0; i < jsonArray.length(); i++){
                                     JSONObject obj = jsonArray.getJSONObject(i);
-                                    SimpleDateFormat df = new SimpleDateFormat("MMM dd, yyyy");
+                                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                                     Date startDate = (Date) df.parse(obj.getString("pkgStartDate"));
                                     Date endDate = (Date) df.parse(obj.getString("pkgEndDate"));
                                     Package pkg = new Package(obj.getInt("packageId"),
@@ -131,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
                                             obj.getDouble("pkgAgencyCommission"));
                                     adapter.add(pkg);
                                 }
-                            } catch (JSONException | ParseException e) {
+                            } catch (Exception e) {
                                 e.printStackTrace();
                             }
                             final ArrayAdapter<Package> finalAdapter = adapter;

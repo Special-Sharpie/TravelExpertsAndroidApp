@@ -4,20 +4,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".PackageViewActivity"
-    android:background="@color/bgGrey">
+    android:background="@color/bgGrey"
+    tools:context=".PackageViewActivity">
 
     <LinearLayout
         android:id="@+id/linearLayout"
-        android:layout_width="373dp"
-        android:layout_height="359dp"
+        android:layout_width="396dp"
+        android:layout_height="457dp"
         android:orientation="horizontal"
-        tools:layout_editor_absoluteX="23dp"
-        tools:layout_editor_absoluteY="12dp">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:layout_width="146dp"
-            android:layout_height="358dp"
+            android:layout_height="match_parent"
             android:orientation="vertical">
 
             <TextView
@@ -42,10 +43,24 @@
                 android:textSize="24sp" />
 
             <TextView
+                android:id="@+id/textView2"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text="Start Time: "
+                android:textSize="24sp" />
+
+            <TextView
                 android:id="@+id/textView6"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:text="End Date: "
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/textView10"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text="End Time: "
                 android:textSize="24sp" />
 
             <TextView
@@ -73,7 +88,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="358dp"
+            android:layout_height="match_parent"
             android:orientation="vertical">
 
             <EditText
@@ -96,14 +111,28 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:ems="10"
-                android:inputType="textPersonName" />
+                android:inputType="text" />
+
+            <EditText
+                android:id="@+id/editTextTime2"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:ems="10"
+                android:inputType="time" />
 
             <EditText
                 android:id="@+id/tbPkgEndDate"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:ems="10"
-                android:inputType="textPersonName" />
+                android:inputType="text" />
+
+            <EditText
+                android:id="@+id/editTextTime3"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:ems="10"
+                android:inputType="time" />
 
             <EditText
                 android:id="@+id/tbPkgDesc"
@@ -117,14 +146,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:ems="10"
-                android:inputType="textPersonName" />
+                android:inputType="numberDecimal" />
 
             <EditText
                 android:id="@+id/tbAgencyCommission"
                 android:layout_width="match_parent"
                 android:layout_height="58dp"
                 android:ems="10"
-                android:inputType="textPersonName" />
+                android:inputType="numberDecimal" />
 
         </LinearLayout>
     </LinearLayout>
@@ -133,25 +162,24 @@
         android:id="@+id/btnConfirmAdd"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:enabled="false"
         android:text="Add Package"
         android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.708" />
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
 
     <LinearLayout
+        android:id="@+id/linearLayout2"
         android:layout_width="225dp"
         android:layout_height="59dp"
+        android:layout_marginTop="24dp"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.607">
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout">
 
         <Button
             android:id="@+id/btnUpdate"
